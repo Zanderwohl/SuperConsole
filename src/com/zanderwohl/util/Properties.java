@@ -1,19 +1,19 @@
 package com.zanderwohl.util;
 
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class Properties {
 
-    public static Map<String, String> toMap(String input){
-        Map<String, String> properties = new HashMap<>();
+    public static HashMap<String, String> toMap(String input){
+        HashMap<String, String> properties = new HashMap<>();
 
         String[] lines = input.split("\n");
         for(String line: lines){
             String[] pair = line.split("=");
-            properties.put(pair[0].trim(), pair[1].trim());
+            if(pair.length > 1) {
+                properties.put(pair[0].trim(), pair[1].trim());
+            }
         }
 
         return properties;

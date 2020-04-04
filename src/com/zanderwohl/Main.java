@@ -1,8 +1,10 @@
 package com.zanderwohl;
 
+import com.zanderwohl.util.Properties;
+
 public class Main {
 
     public static void main(String[] args) {
-	// write your code here
+        Properties.toMap("some=thing");
     }
 }
