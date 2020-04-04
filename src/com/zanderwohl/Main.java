@@ -5,6 +5,6 @@ import com.zanderwohl.util.Properties;
 public class Main {
 
     public static void main(String[] args) {
-        Properties.toMap("some=thing");
+        System.out.println(Message.severities.NORMAL.toString());
     }
 }

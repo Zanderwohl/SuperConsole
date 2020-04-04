@@ -30,4 +30,8 @@ public class Properties {
         return properties;
     }
 
+    public static String get(HashMap<String, String> properties, String key){
+        return properties.get(key);
+    }
+
 }
