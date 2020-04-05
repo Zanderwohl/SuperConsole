@@ -19,3 +19,7 @@
 .button-enabled{
 	-fx-background-color: #DEDEDE;
 }
+.text-label{
+	-fx-background-color: #444444;
+	-fx-text-fill: #DEDEDE;
+}
