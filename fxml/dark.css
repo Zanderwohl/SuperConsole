@@ -1,0 +1,21 @@
+.even-list-a{
+	-fx-background-color: #444444;
+}
+.even-list-b{
+	-fx-background-color: #303030;
+}
+.odd-list-a{
+	-fx-background-color: #555555;
+}
+.odd-list-b{
+	-fx-background-color: #404040;
+}
+.border{
+	-fx-background-color: #444444;
+}
+.foreground{
+	-fx-background-color: #666666;
+}
+.button-enabled{
+	-fx-background-color: #DEDEDE;
+}
