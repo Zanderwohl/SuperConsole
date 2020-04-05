@@ -2,11 +2,13 @@ package com.zanderwohl;
 
 import com.zanderwohl.util.Properties;
 
+import java.text.ParseException;
 import java.util.HashMap;
 
 public class Message {
 
     /**
+     * Enumerator of possible message severities, for sorting and formatting purposes.
      * Normal denotes normal-conditions message.
      * Warning denotes error that can be gracefully recovered from by the program.
      * Critical denotes error that cannot be gracefully recovered from by the program.
@@ -19,6 +21,7 @@ public class Message {
     private String message = "This is a blank message and has not been initialized.";
     private String source = "This message has no given source.";
     private severities severity = severities.NORMAL;
+    private int timestamp = 0;
 
     /**
      * Constructs a message based on a .properties format of "[key]=[value]" where each property is separated by
@@ -48,11 +51,20 @@ public class Message {
         if(source_ != null){
             source = source_;
         }
+        String timestamp_ = Properties.get(msgMap, "time");
+        if(timestamp_ != null){
+            int timestamp_int = Integer.parseInt(timestamp_);
+            timestamp = timestamp_int;
+        }
     }
 
+    /**
+     * Override of the toString() methods.
+     * @return A .properties format string representation of the message.
+     */
     @Override
     public String toString() {
         return "category=" + category + "\nseverity=" + severity.toString() + "\nmessage=" + message +
-                "\nsource=" + source + "\n";
+                "\nsource=" + source + "\ntime=" + timestamp;
     }
 }
