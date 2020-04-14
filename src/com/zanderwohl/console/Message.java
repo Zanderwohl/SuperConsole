@@ -72,7 +72,8 @@ public class Message {
                 nl(b) + "severity=" + severity.toString() +
                 nl(b) + "message=" + message +
                 nl(b) + "source=" + source +
-                nl(b) + "time=" + timestamp;
+                nl(b) + "time=" + timestamp +
+                nl(b) + "EOM";
     }
 
     private String nl(boolean b){

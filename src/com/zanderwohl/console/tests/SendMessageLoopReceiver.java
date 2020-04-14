@@ -1,5 +1,7 @@
 package com.zanderwohl.console.tests;
 
+import com.zanderwohl.console.Main;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -10,7 +12,7 @@ import java.util.concurrent.Executors;
 public class SendMessageLoopReceiver {
 
     public static void main(String[] args) throws Exception{
-        try (var listener = new ServerSocket(201)){
+        try (var listener = new ServerSocket(Main.PORT)){
             System.out.println("SendMessageLoopReciever is running.");
             var pool = Executors.newFixedThreadPool(20);
             while(true){

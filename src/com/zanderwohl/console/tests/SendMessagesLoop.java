@@ -1,5 +1,6 @@
 package com.zanderwohl.console.tests;
 
+import com.zanderwohl.console.Main;
 import com.zanderwohl.console.Message;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class SendMessagesLoop {
         boolean loopAgain = true;
 
         try {
-            socket = new Socket("localhost", 201);
+            socket = new Socket("localhost", Main.PORT);
             input = new Scanner(socket.getInputStream());
             output = new PrintWriter(socket.getOutputStream(), true);
 
@@ -48,7 +49,7 @@ public class SendMessagesLoop {
 
     public static String blankMessage(){
         Message blankMessage = new Message("time=" + Instant.now().getEpochSecond());
-        return blankMessage.toString(false);
+        return blankMessage.toString();
     }
 
 }
