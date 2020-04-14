@@ -1,4 +1,4 @@
-package com.zanderwohl;
+package com.zanderwohl.console;
 
 import com.zanderwohl.util.Properties;
 
@@ -63,8 +63,23 @@ public class Message {
      * @return A .properties format string representation of the message.
      */
     @Override
-    public String toString() {
-        return "category=" + category + "\nseverity=" + severity.toString() + "\nmessage=" + message +
-                "\nsource=" + source + "\ntime=" + timestamp;
+    public String toString(){
+        return toString(true);
+    }
+
+    public String toString(Boolean b) {
+        return "category=" + category +
+                nl(b) + "severity=" + severity.toString() +
+                nl(b) + "message=" + message +
+                nl(b) + "source=" + source +
+                nl(b) + "time=" + timestamp;
+    }
+
+    private String nl(boolean b){
+        if(b){
+            return "\n";
+        } else {
+            return ",";
+        }
     }
 }

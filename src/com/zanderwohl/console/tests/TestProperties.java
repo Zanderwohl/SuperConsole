@@ -1,4 +1,4 @@
-package com.zanderwohl.tests;
+package com.zanderwohl.console.tests;
 
 import com.zanderwohl.util.Properties;
 import org.junit.Test;

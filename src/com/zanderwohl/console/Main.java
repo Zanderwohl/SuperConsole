@@ -1,6 +1,4 @@
-package com.zanderwohl;
-
-import com.zanderwohl.util.Properties;
+package com.zanderwohl.console;
 
 public class Main {
 

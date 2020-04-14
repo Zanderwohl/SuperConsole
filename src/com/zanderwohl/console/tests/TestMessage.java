@@ -1,6 +1,6 @@
-package com.zanderwohl.tests;
+package com.zanderwohl.console.tests;
 
-import com.zanderwohl.Message;
+import com.zanderwohl.console.Message;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
