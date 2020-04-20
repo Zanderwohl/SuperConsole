@@ -39,8 +39,12 @@ public class Main {
                 input = new Scanner(socket.getInputStream());
                 output = new PrintWriter(socket.getOutputStream(), true);
             } catch (IOException e) {
-                System.err.println("Socket in Receiver could not be created!");
-                e.printStackTrace();
+                String ms = "Socket in Receiver could not be created!";
+                Message error = new Message("source=Connector\nseverity=CONSOLE\ncategory=Network\nmessage=" + ms);
+                String st = e.toString().replace("\n","->");
+                Message trace = new Message("source=Connector\nseverity=CONSOLE\ncategory=Network\nmessage=" + st);
+                networkQueue.add(error.toString());
+                networkQueue.add(trace.toString());
             }
 
         }
@@ -82,7 +86,7 @@ public class Main {
                     String message = networkQueue.remove();
                     Message m = new Message(message);
                     messages.add(m);
-                    System.out.println(messages.size() + ":::" + m.toString(true));
+                    System.out.println(messages.size() + ":\n" + m.toString(true) + "\n");
                 }
             }
         }
