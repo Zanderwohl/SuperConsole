@@ -1,6 +1,7 @@
 package com.zanderwohl.console;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -63,6 +64,8 @@ public class WindowView implements Runnable {
 
         deleteTestLabel = new JLabel("");
         firstPanel.add(deleteTestLabel);
+        //frame.pack();
+        frame.setPreferredSize(new Dimension(400, 300));
         frame.pack();
     }
 
@@ -95,23 +98,27 @@ public class WindowView implements Runnable {
         if(messagesLengthPrevious < end){
             for(int i = messagesLengthPrevious; i < end; i++){
                 Message m = messages.get(i);
-                panels.get(0).add(buildMessageHorizontal(m));
+                panels.get(0).add(buildMessageHorizontal(m, i));
             }
         }
 
+        messagesLengthPrevious = messages.size();
     }
 
-    private Container buildMessageHorizontal(Message m){
-        Panel p = new Panel();
-        p.setBackground(Color.blue);
+    private Container buildMessageHorizontal(Message m, int index){
+        JPanel p = new JPanel();
+        p.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        //Random deleteThis = new Random();
+        //p.setBackground(new Color(deleteThis.nextInt()));
         p.setPreferredSize(new Dimension(400, 40));
         //GridLayout layout = new GridLayout(1,5);
         //p.setLayout(layout);
-        //layout.addLayoutComponent("category", new JLabel(/*m.getAttribute("category")*/"hi"));
-        //layout.addLayoutComponent("message", new JLabel(m.getAttribute("message")));
-        //layout.addLayoutComponent("source", new JLabel(m.getAttribute("source")));
-        //layout.addLayoutComponent("time", new JLabel(m.getAttribute("time")));
-        //layout.addLayoutComponent("severity", new JLabel(m.getAttribute("severity")));
+        p.add("index", new JLabel(index + ""));
+        p.add("category", new JLabel(m.getAttribute("category")));
+        p.add("message", new JLabel(m.getAttribute("message")));
+        p.add("source", new JLabel(m.getAttribute("source")));
+        p.add("time", new JLabel(m.getAttribute("time")));
+        p.add("severity", new JLabel(m.getAttribute("severity")));
         return p;
     }
 
@@ -130,6 +137,7 @@ public class WindowView implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            //updateGUI(); //down here, we wait for the other threads updating first.
         }
     }
 }
