@@ -11,8 +11,6 @@ import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static com.zanderwohl.console.tests.SendMessagesLoop.blankMessage;
-
 public class SendMessageLoopReceiver {
 
     public static void main(String[] args) throws Exception{
@@ -38,17 +36,22 @@ public class SendMessageLoopReceiver {
             try {
                 var in = new Scanner(socket.getInputStream());
                 var out = new PrintWriter(socket.getOutputStream(), true);
-                /*while(in.hasNextLine()){
-                    String text = ":::" + in.nextLine();
-                    System.out.println(text);
-                    out.println(text);
-                }*/
+                String message = "";
                 while(true){
                     TimeUnit.SECONDS.sleep(1);
                     System.out.println("Sending packet.");
                     Message m = new Message("source=Test Server\nseverity=WARNING\ncontent=Hello buds!\nEOM");
                     out.println(m);
                     System.out.println(m + "\n");
+
+                    /*while(in.hasNextLine()){
+                        String line = in.nextLine();
+                        message += "\n" + line;
+                        if(line.equals("EOM")) {
+                            System.out.println(message + "\n");
+                            message = "";
+                        }
+                    }*/
                 }
             } catch (Exception e){
                 System.out.println("Error: " + socket + "\n" + e);

@@ -3,10 +3,9 @@ package com.zanderwohl.console;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Main {
 
@@ -15,11 +14,19 @@ public class Main {
     public static void main(String[] args) {
         ConcurrentLinkedQueue<String> networkQueue = new ConcurrentLinkedQueue<String>();
         ConcurrentLinkedQueue<String> userQueue = new ConcurrentLinkedQueue<String>();
+        CopyOnWriteArrayList<Message> messages = new CopyOnWriteArrayList<Message>();
 
         Thread connector = new Thread(new Connector(networkQueue, userQueue));
-        Thread consoleModel = new Thread(new ConsoleModel(networkQueue, userQueue));
+        Thread consoleModel = new Thread(new ConsoleModel(networkQueue, userQueue, messages));
+        Thread view = new Thread(new WindowView(messages, userQueue));
+
         connector.start();
         consoleModel.start();
+        view.start();
+    }
+
+    public static void close(){
+        System.exit(0);
     }
 
     private static class Connector implements Runnable {
@@ -62,6 +69,13 @@ public class Main {
                         message = "";
                     }
                 }
+
+               while(userQueue.size() > 0){
+                    System.out.println(userQueue.size());
+                    String userInput = userQueue.remove();
+                    Message userMessage = new Message("severity=USER\nsource=Console\ncontent=" + userInput);
+                    output.write(userMessage.toString());
+                }
             }
         }
     }
@@ -70,13 +84,15 @@ public class Main {
         ConcurrentLinkedQueue<String> networkQueue;
         ConcurrentLinkedQueue<String> userQueue;
 
-        ArrayList<Message> messages;
+        CopyOnWriteArrayList<Message> messages;
+
 
         public ConsoleModel(ConcurrentLinkedQueue<String> networkQueue,
-                            ConcurrentLinkedQueue<String> userQueue){
+                            ConcurrentLinkedQueue<String> userQueue,
+                            CopyOnWriteArrayList<Message> messages){
             this.networkQueue = networkQueue;
             this.userQueue = userQueue;
-            messages = new ArrayList<>();
+            this.messages = messages;
         }
 
         @Override
@@ -86,7 +102,6 @@ public class Main {
                     String message = networkQueue.remove();
                     Message m = new Message(message);
                     messages.add(m);
-                    System.out.println(messages.size() + ":\n" + m.toString(true) + "\n");
                 }
             }
         }

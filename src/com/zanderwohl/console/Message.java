@@ -2,7 +2,6 @@ package com.zanderwohl.console;
 
 import com.zanderwohl.util.Properties;
 
-import java.text.ParseException;
 import java.util.HashMap;
 
 public class Message {
@@ -15,7 +14,7 @@ public class Message {
      * Info denotes emphasized message that is not an error.
      * Console denotes message that was input by the user.
      */
-    public enum severities {NORMAL, WARNING, CRITICAL, INFO, CONSOLE}
+    public enum severities {NORMAL, WARNING, CRITICAL, INFO, CONSOLE, USER}
 
     private String category = "None";
     private String message = "This is a blank message and has not been initialized.";
@@ -67,6 +66,11 @@ public class Message {
         return toString(true);
     }
 
+    /**
+     * A tostring that can return the message, separating the attributes by newlines or commas.
+     * @param b If true, newline will be used between each attribute. Otherwise, comma used.
+     * @return String representation in .properties format.
+     */
     public String toString(Boolean b) {
         return "category=" + category +
                 nl(b) + "severity=" + severity.toString() +
@@ -76,11 +80,41 @@ public class Message {
                 nl(b) + "EOM";
     }
 
+    /**
+     * Chooses whether a newline should be added or just a comma.
+     * Used for printing messages inline or not.
+     * @param b If true, newline will be used between each attribute. Otherwise, comma used.
+     * @return The newline or comma.
+     */
     private String nl(boolean b){
         if(b){
             return "\n";
         } else {
             return ",";
         }
+    }
+
+    /**
+     * TODO: Finish this.
+     * @param key
+     * @return
+     */
+    public String getAttribute(String key){
+        if(key.equalsIgnoreCase("severity")){
+            return severity.toString();
+        }
+        if(key.equalsIgnoreCase("message")){
+            return message;
+        }
+        if(key.equalsIgnoreCase("source")){
+            return source;
+        }
+        if(key.equalsIgnoreCase("time")){
+            return Integer.toString(timestamp);
+        }
+        if(key.equalsIgnoreCase("category")){
+            return category;
+        }
+        return "They key '" + key + "' is not an attribute of Message.";
     }
 }
