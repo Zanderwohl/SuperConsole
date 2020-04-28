@@ -18,6 +18,10 @@ public class WindowView implements Runnable {
 
     JFrame frame;
     ArrayList<JPanel> panels = new ArrayList<>();
+    ArrayList<JPanel> scrollChildren = new ArrayList<>();
+    ArrayList<JScrollBar> panelScrolls = new ArrayList<>(); //scroll behavior for each tab.
+    ArrayList<Boolean> autoscroll = new ArrayList<>();
+    ArrayList<JLabel> replaceTestLables = new ArrayList<>();
     //JPanel panel;
     JLabel deleteTestLabel;
 
@@ -59,13 +63,25 @@ public class WindowView implements Runnable {
         tabbedPane = new JTabbedPane();
         for(JPanel panel: panels) {
             tabbedPane.addTab("Console", panel);
+            JPanel scrollChild = new JPanel();
+            scrollChild.setLayout(new BoxLayout(scrollChild, BoxLayout.PAGE_AXIS));
+            scrollChildren.add(scrollChild);
+            JScrollPane scrollpane = new JScrollPane(scrollChild);
+            panel.add(scrollpane);
+
+            scrollChild.setBackground(Color.PINK);
+
+            JScrollBar sb = scrollpane.getVerticalScrollBar();
+            panelScrolls.add(sb);
+            autoscroll.add(true);
+
+            JLabel testLabel = new JLabel("");
+            replaceTestLables.add(testLabel);
+            panel.add(testLabel);
         }
         frame.add(tabbedPane, BorderLayout.CENTER);
 
-        deleteTestLabel = new JLabel("");
-        firstPanel.add(deleteTestLabel);
-        //frame.pack();
-        frame.setPreferredSize(new Dimension(400, 300));
+        frame.setPreferredSize(new Dimension(600, 400));
         frame.pack();
     }
 
@@ -93,16 +109,24 @@ public class WindowView implements Runnable {
     }
 
     public void updateGUI(){
-        deleteTestLabel.setText("messages: " + messages.size());
+        System.out.println(messages.size());
+
+        replaceTestLables.get(0).setText("messages: " + messages.size());
         int end = messages.size();
         if(messagesLengthPrevious < end){
             for(int i = messagesLengthPrevious; i < end; i++){
                 Message m = messages.get(i);
-                panels.get(0).add(buildMessageHorizontal(m, i));
+                scrollChildren.get(0).add(buildMessageHorizontal(m, i));
             }
         }
 
         messagesLengthPrevious = messages.size();
+
+        int selectedPane = tabbedPane.getSelectedIndex();
+        if(autoscroll.get(selectedPane)){
+            JScrollBar bar = panelScrolls.get(selectedPane);
+            bar.setValue(bar.getMaximum());
+        }
     }
 
     private Container buildMessageHorizontal(Message m, int index){
@@ -110,9 +134,12 @@ public class WindowView implements Runnable {
         p.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         //Random deleteThis = new Random();
         //p.setBackground(new Color(deleteThis.nextInt()));
-        p.setPreferredSize(new Dimension(400, 40));
-        //GridLayout layout = new GridLayout(1,5);
-        //p.setLayout(layout);
+        int height = 40;
+        p.setPreferredSize(new Dimension(400, height));
+        p.setMaximumSize(new Dimension(Integer.MAX_VALUE, height));
+        p.setMinimumSize(new Dimension(300, height));
+        GridLayout layout = new GridLayout(1,6);
+        p.setLayout(layout);
         p.add("index", new JLabel(index + ""));
         p.add("category", new JLabel(m.getAttribute("category")));
         p.add("message", new JLabel(m.getAttribute("message")));
@@ -130,9 +157,6 @@ public class WindowView implements Runnable {
             updateGUI();
             try {
                 TimeUnit.MILLISECONDS.sleep(20);
-                for(Message m: messages){
-                    System.out.print(m.getAttribute("severity") + "\t");
-                }
                 System.out.println();
             } catch (InterruptedException e) {
                 e.printStackTrace();
