@@ -6,6 +6,7 @@ import com.zanderwohl.console.Message;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.Instant;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -36,13 +37,15 @@ public class DummyProgram {
 
         @Override
         public void run(){
+            long nextSend = Instant.now().getEpochSecond() + 1;
             try {
                 while(true){
-                    //TimeUnit.SECONDS.sleep(1);
-                    //System.out.println("Sending packet.");
-                    //Message m = new Message(SendMessagesLoop.blankMessage());
-                    //output.println(m.toString());
-                    //System.out.println(m + "\n");
+                    if(nextSend == Instant.now().getEpochSecond()){
+                        nextSend = Instant.now().getEpochSecond() + 10;
+                        System.out.println("Sending packet.");
+                        Message m = new Message(SendMessagesLoop.blankMessage());
+                        output.println(m.toString());
+                    }
                     while(!queue.isEmpty()){
                         output.println(queue.remove());
                     }
