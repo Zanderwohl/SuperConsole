@@ -40,7 +40,8 @@ public class SendMessageLoopReceiver {
                 while(true){
                     TimeUnit.SECONDS.sleep(1);
                     System.out.println("Sending packet.");
-                    Message m = new Message("source=Test Server\nseverity=WARNING\ncontent=Hello buds!\nEOM");
+                    //Message m = new Message("source=Test Server\nseverity=WARNING\ncontent=Hello buds!\nEOM");
+                    Message m = new Message(SendMessagesLoop.randomSeverityBlankMessage());
                     out.println(m);
                     System.out.println(m + "\n");
 

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.time.Instant;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -28,7 +29,7 @@ public class SendMessagesLoop {
                 while (loopAgain){
                     TimeUnit.SECONDS.sleep(1);
                     System.out.println("Sending packet.");
-                    output.println(blankMessage());
+                    output.println(randomSeverityBlankMessage());
                     System.out.println(input.nextLine());
                 }
             } catch(InterruptedException e){
@@ -49,6 +50,15 @@ public class SendMessagesLoop {
 
     public static String blankMessage(){
         Message blankMessage = new Message("time=" + Instant.now().getEpochSecond());
+        return blankMessage.toString();
+    }
+
+    public static String randomSeverityBlankMessage(){
+        Random r = new Random();
+        int length = Message.severities.values().length;
+        int index = r.nextInt(length);
+        String choice = Message.severities.values()[index].toString();
+        Message blankMessage = new Message("time=" + Instant.now().getEpochSecond() + "\nseverity=" + choice);
         return blankMessage.toString();
     }
 

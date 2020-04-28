@@ -17,13 +17,7 @@ public class WindowView implements Runnable {
     ConcurrentLinkedQueue<String> userQueue;
 
     JFrame frame;
-    ArrayList<JPanel> panels = new ArrayList<>();
-    ArrayList<JPanel> scrollChildren = new ArrayList<>();
-    ArrayList<JScrollBar> panelScrolls = new ArrayList<>(); //scroll behavior for each tab.
-    ArrayList<Boolean> autoscroll = new ArrayList<>();
-    ArrayList<JLabel> replaceTestLables = new ArrayList<>();
-    //JPanel panel;
-    JLabel deleteTestLabel;
+    ArrayList<ConsoleTab> panels = new ArrayList<>();
 
     JTabbedPane tabbedPane;
 
@@ -40,8 +34,6 @@ public class WindowView implements Runnable {
             }
         });
 
-
-
         buildWindow();
     }
 
@@ -49,38 +41,19 @@ public class WindowView implements Runnable {
         frame.setLayout(new BorderLayout());
         JMenuBar menuBar = new JMenuBar();
         addFileMenu(menuBar);
-        //frame.add(menuBar, BorderLayout.NORTH);
         frame.setJMenuBar(menuBar);
 
-        JPanel firstPanel = new JPanel();
+        ConsoleTab firstPanel = new ConsoleTab();
+        ConsoleTab secondPanel = new ConsoleTab();
         panels.add(firstPanel);
-        firstPanel.setLayout(new BoxLayout(firstPanel, BoxLayout.PAGE_AXIS));
-
-        JPanel secondPanel = new JPanel();
         panels.add(secondPanel);
-        secondPanel.setLayout(new BoxLayout(secondPanel, BoxLayout.PAGE_AXIS));
 
         tabbedPane = new JTabbedPane();
         for(JPanel panel: panels) {
             tabbedPane.addTab("Console", panel);
-            JPanel scrollChild = new JPanel();
-            scrollChild.setLayout(new BoxLayout(scrollChild, BoxLayout.PAGE_AXIS));
-            scrollChildren.add(scrollChild);
-            JScrollPane scrollpane = new JScrollPane(scrollChild);
-            panel.add(scrollpane);
-
-            scrollChild.setBackground(Color.PINK);
-
-            JScrollBar sb = scrollpane.getVerticalScrollBar();
-            panelScrolls.add(sb);
-            autoscroll.add(true);
-
-            JLabel testLabel = new JLabel("");
-            replaceTestLables.add(testLabel);
-            panel.add(testLabel);
         }
-        frame.add(tabbedPane, BorderLayout.CENTER);
 
+        frame.add(tabbedPane, BorderLayout.CENTER);
         frame.setPreferredSize(new Dimension(600, 400));
         frame.pack();
     }
@@ -109,24 +82,18 @@ public class WindowView implements Runnable {
     }
 
     public void updateGUI(){
-        System.out.println(messages.size());
-
-        replaceTestLables.get(0).setText("messages: " + messages.size());
         int end = messages.size();
         if(messagesLengthPrevious < end){
             for(int i = messagesLengthPrevious; i < end; i++){
                 Message m = messages.get(i);
-                scrollChildren.get(0).add(buildMessageHorizontal(m, i));
+                panels.get(0).addMessage(m);
             }
         }
 
         messagesLengthPrevious = messages.size();
 
-        int selectedPane = tabbedPane.getSelectedIndex();
-        if(autoscroll.get(selectedPane)){
-            JScrollBar bar = panelScrolls.get(selectedPane);
-            bar.setValue(bar.getMaximum());
-        }
+
+        panels.get(0).screenUpdate();
     }
 
     private Container buildMessageHorizontal(Message m, int index){
