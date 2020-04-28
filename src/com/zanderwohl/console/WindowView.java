@@ -43,15 +43,21 @@ public class WindowView implements Runnable {
         addFileMenu(menuBar);
         frame.setJMenuBar(menuBar);
 
-        ConsoleTab firstPanel = new ConsoleTab();
-        ConsoleTab secondPanel = new ConsoleTab();
-        panels.add(firstPanel);
-        panels.add(secondPanel);
-
         tabbedPane = new JTabbedPane();
-        for(JPanel panel: panels) {
-            tabbedPane.addTab("Console", panel);
-        }
+
+        String consoleName = "Console";
+        String blankName = "Blank";
+
+        ConsoleTab firstPanel = new ConsoleTab(this, consoleName);
+        ConsoleTab secondPanel = new ConsoleTab(this, blankName);
+        panels.add(firstPanel);
+        tabbedPane.addTab(consoleName, firstPanel);
+        panels.add(secondPanel);
+        tabbedPane.addTab(blankName, secondPanel);
+
+        //for(JPanel panel: panels) {
+        //    tabbedPane.addTab("Console", panel);
+        //}
 
         frame.add(tabbedPane, BorderLayout.CENTER);
         frame.setPreferredSize(new Dimension(600, 400));
@@ -116,6 +122,11 @@ public class WindowView implements Runnable {
         return p;
     }
 
+    public void submitUserInput(String input, String source){
+        Message m = new Message("severity=user\nmessage=" + input + "\nsource=" + source);
+        userQueue.add(m.toString());
+    }
+
 
     @Override
     public void run() {
@@ -124,7 +135,7 @@ public class WindowView implements Runnable {
             updateGUI();
             try {
                 TimeUnit.MILLISECONDS.sleep(20);
-                System.out.println();
+                //System.out.println();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

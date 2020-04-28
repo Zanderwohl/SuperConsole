@@ -11,16 +11,23 @@ public class Main {
 
     public static final int PORT = 288;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ConcurrentLinkedQueue<String> networkQueue = new ConcurrentLinkedQueue<String>();
         ConcurrentLinkedQueue<String> userQueue = new ConcurrentLinkedQueue<String>();
         CopyOnWriteArrayList<Message> messages = new CopyOnWriteArrayList<Message>();
+        ConcurrentLinkedQueue<String> modelSendQueue = new ConcurrentLinkedQueue<>();
 
-        Thread connector = new Thread(new Connector(networkQueue, userQueue));
-        Thread consoleModel = new Thread(new ConsoleModel(networkQueue, userQueue, messages));
+        Socket socket = new Socket("localhost", Main.PORT);
+        Scanner input = new Scanner(socket.getInputStream());
+        PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
+
+        Thread sender = new Thread(new Sender(modelSendQueue, output));
+        Thread receiver = new Thread(new Receiver(networkQueue, input));
+        Thread consoleModel = new Thread(new ConsoleModel(networkQueue, userQueue, messages, modelSendQueue));
         Thread view = new Thread(new WindowView(messages, userQueue));
 
-        connector.start();
+        sender.start();
+        receiver.start();
         consoleModel.start();
         view.start();
     }
@@ -29,30 +36,15 @@ public class Main {
         System.exit(0);
     }
 
-    private static class Connector implements Runnable {
+    private static class Receiver implements Runnable {
 
         ConcurrentLinkedQueue<String> networkQueue;
-        ConcurrentLinkedQueue<String> userQueue;
 
-        private static Socket socket;
         private static Scanner input;
-        private static PrintWriter output;
 
-        public Connector(ConcurrentLinkedQueue<String> networkQueue, ConcurrentLinkedQueue<String> userQueue){
+        public Receiver(ConcurrentLinkedQueue<String> networkQueue, Scanner input){
             this.networkQueue = networkQueue;
-            this.userQueue = userQueue;
-            try {
-                socket = new Socket("localhost", Main.PORT);
-                input = new Scanner(socket.getInputStream());
-                output = new PrintWriter(socket.getOutputStream(), true);
-            } catch (IOException e) {
-                String ms = "Socket in Receiver could not be created!";
-                Message error = new Message("source=Connector\nseverity=CONSOLE\ncategory=Network\nmessage=" + ms);
-                String st = e.toString().replace("\n","->");
-                Message trace = new Message("source=Connector\nseverity=CONSOLE\ncategory=Network\nmessage=" + st);
-                networkQueue.add(error.toString());
-                networkQueue.add(trace.toString());
-            }
+            this.input = input;
 
         }
 
@@ -69,12 +61,28 @@ public class Main {
                         message = "";
                     }
                 }
+            }
+        }
+    }
 
-               while(userQueue.size() > 0){
-                    System.out.println(userQueue.size());
-                    String userInput = userQueue.remove();
-                    Message userMessage = new Message("severity=USER\nsource=Console\ncontent=" + userInput);
-                    output.write(userMessage.toString());
+    private static class Sender implements Runnable {
+
+        ConcurrentLinkedQueue<String> modelSendQueue;
+        PrintWriter output;
+
+        public Sender(ConcurrentLinkedQueue<String> modelSendQueue,
+                      PrintWriter output){
+            this.modelSendQueue = modelSendQueue;
+            this.output = output;
+        }
+
+        @Override
+        public void run() {
+            while(true){
+                //System.out.println(modelSendQueue.size());
+                while(!modelSendQueue.isEmpty()){
+                    String message = modelSendQueue.remove();
+                    output.println(message);
                 }
             }
         }
@@ -84,15 +92,19 @@ public class Main {
         ConcurrentLinkedQueue<String> networkQueue;
         ConcurrentLinkedQueue<String> userQueue;
 
+        ConcurrentLinkedQueue<String> modelSendQueue;
+
         CopyOnWriteArrayList<Message> messages;
 
 
         public ConsoleModel(ConcurrentLinkedQueue<String> networkQueue,
                             ConcurrentLinkedQueue<String> userQueue,
-                            CopyOnWriteArrayList<Message> messages){
+                            CopyOnWriteArrayList<Message> messages,
+                            ConcurrentLinkedQueue<String> modelSendQueue){
             this.networkQueue = networkQueue;
             this.userQueue = userQueue;
             this.messages = messages;
+            this.modelSendQueue = modelSendQueue;
         }
 
         @Override
@@ -103,7 +115,16 @@ public class Main {
                     Message m = new Message(message);
                     messages.add(m);
                 }
+                while(!userQueue.isEmpty()){
+                    String message = userQueue.remove();
+
+                    System.out.print("User input:\n\t" + message);
+                    Message m = new Message(message);
+                    modelSendQueue.add(message);
+                    messages.add(m);
+                }
             }
         }
     }
+
 }

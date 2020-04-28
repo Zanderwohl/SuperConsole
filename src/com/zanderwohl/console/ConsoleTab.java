@@ -6,8 +6,13 @@ import java.awt.*;
 
 public class ConsoleTab extends JPanel {
 
+    WindowView parent;
+    String tabName = "Console";
+
     JPanel messagePanel;
     JScrollBar scrollbar;
+
+    UserInput user;
 
     JPanel footer;
     JLabel testLabel;
@@ -15,9 +20,11 @@ public class ConsoleTab extends JPanel {
 
     int messagesCount = 0;
 
-    public ConsoleTab(){
+    public ConsoleTab(WindowView parent, String name){
         super();
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        this.parent = parent;
+        this.tabName = name;
 
         messagePanel = new JPanel();
         messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.PAGE_AXIS));
@@ -27,6 +34,9 @@ public class ConsoleTab extends JPanel {
 
         scrollbar = scrollPane.getVerticalScrollBar();
         scrollbar.setUnitIncrement(16);
+
+        user = new UserInput(this);
+        this.add(user);
 
         footer = new JPanel();
         footer.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
@@ -69,5 +79,9 @@ public class ConsoleTab extends JPanel {
         p.add("time", new JLabel(m.getAttribute("time")));
         p.add("severity", new JLabel(m.getAttribute("severity")));
         return p;
+    }
+
+    public void submitUserInput(String input){
+        parent.submitUserInput(input, tabName);
     }
 }
