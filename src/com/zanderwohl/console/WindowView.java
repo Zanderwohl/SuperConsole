@@ -1,7 +1,6 @@
 package com.zanderwohl.console;
 
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -100,26 +99,6 @@ public class WindowView implements Runnable {
 
 
         panels.get(0).screenUpdate();
-    }
-
-    private Container buildMessageHorizontal(Message m, int index){
-        JPanel p = new JPanel();
-        p.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        //Random deleteThis = new Random();
-        //p.setBackground(new Color(deleteThis.nextInt()));
-        int height = 40;
-        p.setPreferredSize(new Dimension(400, height));
-        p.setMaximumSize(new Dimension(Integer.MAX_VALUE, height));
-        p.setMinimumSize(new Dimension(300, height));
-        GridLayout layout = new GridLayout(1,6);
-        p.setLayout(layout);
-        p.add("index", new JLabel(index + ""));
-        p.add("category", new JLabel(m.getAttribute("category")));
-        p.add("message", new JLabel(m.getAttribute("message")));
-        p.add("source", new JLabel(m.getAttribute("source")));
-        p.add("time", new JLabel(m.getAttribute("time")));
-        p.add("severity", new JLabel(m.getAttribute("severity")));
-        return p;
     }
 
     public void submitUserInput(String input, String source){
