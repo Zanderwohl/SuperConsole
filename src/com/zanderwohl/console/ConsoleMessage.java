@@ -52,22 +52,22 @@ public class ConsoleMessage extends JPanel {
 
     private static void setSeverityColor(JLabel label, Message m){
         String severity = m.getAttribute("severity");
-        if(severity == Message.severities.NORMAL.toString()){
+        if(severity.equals(Message.severities.NORMAL.toString())){
             label.setForeground(Color.BLACK);
         }
-        if(severity == Message.severities.WARNING.toString()){
+        if(severity.equals(Message.severities.WARNING.toString())){
             label.setForeground(Color.YELLOW);
         }
-        if(severity == Message.severities.CRITICAL.toString()){
+        if(severity.equals(Message.severities.CRITICAL.toString())){
             label.setForeground(Color.RED);
         }
-        if(severity == Message.severities.INFO.toString()){
+        if(severity.equals(Message.severities.INFO.toString())){
             label.setForeground(Color.GREEN);
         }
-        if(severity == Message.severities.CONSOLE.toString()){
+        if(severity.equals(Message.severities.CONSOLE.toString())){
             label.setForeground(Color.orange);
         }
-        if(severity == Message.severities.USER.toString()){
+        if(severity.equals(Message.severities.USER.toString())){
             label.setForeground(Color.BLUE);
         }
     }
