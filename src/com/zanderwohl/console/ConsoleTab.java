@@ -14,6 +14,7 @@ public class ConsoleTab extends JPanel {
 
     UserInput user;
 
+    JPanel header;
     JPanel footer;
     JLabel testLabel;
     JCheckBox autoScrollCheck;
@@ -25,6 +26,9 @@ public class ConsoleTab extends JPanel {
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         this.parent = parent;
         this.tabName = name;
+
+        header = new ConsoleMessage(new Message(""), -1);
+        this.add(header);
 
         messagePanel = new JPanel();
         messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.PAGE_AXIS));

@@ -31,6 +31,15 @@ public class ConsoleMessage extends JPanel {
         time = new JLabel(m.getAttribute("time"));
         severity = new JLabel(m.getAttribute("severity"));
 
+        if(index == -1){
+            this.index.setText("");
+            category.setText("Category");
+            message.setText("Message");
+            source.setText("Source");
+            time.setText("Time");
+            severity.setText("Severity");
+        }
+
         setSeverityColor(severity, m);
 
         this.add(this.index);

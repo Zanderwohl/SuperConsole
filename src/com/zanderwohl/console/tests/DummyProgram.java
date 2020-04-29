@@ -74,7 +74,7 @@ public class DummyProgram {
                 if(line.equals("EOM")) {
                     Message m = new Message(userMessage);
                     System.out.println("Got user input:\n\t" + userMessage);
-                    System.out.println(m.toString());
+                    //System.out.println(m.toString());
                     String returnMessage = "Dummy got the input: " + m.getAttribute("message");
                     queue.add((new Message("source=Dummy\nmessage=" + returnMessage)).toString());
                     userMessage = "";

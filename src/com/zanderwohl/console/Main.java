@@ -118,7 +118,7 @@ public class Main {
                 while(!userQueue.isEmpty()){
                     String message = userQueue.remove();
 
-                    System.out.print("User input:\n\t" + message);
+                    //System.out.print("User input:\n\t" + message);
                     Message m = new Message(message);
                     modelSendQueue.add(message);
                     messages.add(m);
