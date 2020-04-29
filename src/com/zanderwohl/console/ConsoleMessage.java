@@ -21,8 +21,8 @@ public class ConsoleMessage extends JPanel {
         this.setPreferredSize(new Dimension(400, height));
         this.setMaximumSize(new Dimension(Integer.MAX_VALUE, height));
         this.setMinimumSize(new Dimension(300, height));
-        GridLayout layout = new GridLayout(1,6);
-        this.setLayout(layout);
+        this.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
 
         this.index = new JLabel(index + "");
         category = new JLabel(m.getAttribute("category"));
@@ -30,6 +30,15 @@ public class ConsoleMessage extends JPanel {
         source = new JLabel(m.getAttribute("source"));
         time = new JLabel(m.getAttribute("time"));
         severity = new JLabel(m.getAttribute("severity"));
+
+        JLabel[] set = {this.index, category, source, time, severity};
+        Dimension d = new Dimension(70, 40);
+        for(JLabel j: set){
+            j.setPreferredSize(d);
+            j.setMaximumSize(d);
+            j.setMinimumSize(d);
+        }
+        message.setMinimumSize(new Dimension(200, 40));
 
         if(index == -1){
             this.index.setText("");
@@ -42,12 +51,21 @@ public class ConsoleMessage extends JPanel {
 
         setSeverityColor(severity, m);
 
-        this.add(this.index);
-        this.add(category);
-        this.add(message);
-        this.add(source);
-        this.add(time);
-        this.add(severity);
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.gridy = 1;
+        c.weightx = 0.0;
+        c.insets = new Insets(5, 5, 5, 5);
+        this.add(this.index, c);
+        this.add(category, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1.0;
+        c.gridwidth = 7;
+        this.add(message, c);
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 0.0;
+        this.add(source, c);
+        this.add(time, c);
+        this.add(severity, c);
     }
 
     private static void setSeverityColor(JLabel label, Message m){

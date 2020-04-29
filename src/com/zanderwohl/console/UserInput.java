@@ -74,6 +74,7 @@ public class UserInput extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 0.1;
+        c.insets = new Insets(5, 5, 5, 5);
         this.add(input, c);
         c.gridx = 1;
         c.gridy = 0;

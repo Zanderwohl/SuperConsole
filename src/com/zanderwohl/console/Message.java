@@ -18,7 +18,7 @@ public class Message {
 
     private String category = "None";
     private String message = "This is a blank message and has not been initialized.";
-    private String source = "This message has no given source.";
+    private String source = "No Source.";
     private severities severity = severities.NORMAL;
     private int timestamp = 0;
 
