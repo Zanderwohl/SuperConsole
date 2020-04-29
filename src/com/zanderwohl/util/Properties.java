@@ -15,7 +15,7 @@ public class Properties {
 
         String[] lines = input.split("\n");
         for(String line: lines){
-            String[] pair = line.split("=");
+            String[] pair = line.split("=", 2);
             if(pair.length > 1) {
                 properties.put(pair[0].trim(), pair[1].trim());
             }

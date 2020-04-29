@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class WindowView implements Runnable {
 
     CopyOnWriteArrayList<Message> messages;
-    ConcurrentLinkedQueue<String> userQueue;
+    ConcurrentLinkedQueue<Message> userQueue;
 
     JFrame frame;
     ArrayList<ConsoleTab> panels = new ArrayList<>();
@@ -22,7 +22,7 @@ public class WindowView implements Runnable {
 
     int messagesLengthPrevious = 0;
 
-    public WindowView(CopyOnWriteArrayList<Message> messages, ConcurrentLinkedQueue<String> userQueue){
+    public WindowView(CopyOnWriteArrayList<Message> messages, ConcurrentLinkedQueue<Message> userQueue){
         this.messages = messages;
         this.userQueue = userQueue;
 
@@ -103,7 +103,7 @@ public class WindowView implements Runnable {
 
     public void submitUserInput(String input, String source){
         Message m = new Message("severity=user\nmessage=" + input + "\nsource=" + source);
-        userQueue.add(m.toString());
+        userQueue.add(m);
     }
 
 

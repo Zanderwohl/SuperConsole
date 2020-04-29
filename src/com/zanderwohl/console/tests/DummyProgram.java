@@ -15,7 +15,7 @@ public class DummyProgram {
     public static void main(String[] args) throws Exception {
         try (var listener = new ServerSocket(Main.PORT)){
             System.out.println("Dummy Program is running.");
-            ConcurrentLinkedQueue<String> loopbackQueue = new ConcurrentLinkedQueue<>();
+            ConcurrentLinkedQueue<Message> loopbackQueue = new ConcurrentLinkedQueue<>();
             Socket socket = listener.accept();
             Thread send = new Thread(new Send(new PrintWriter(socket.getOutputStream(), true), loopbackQueue));
             Thread receive = new Thread(new Receive(new Scanner(socket.getInputStream()), loopbackQueue));
@@ -28,7 +28,7 @@ public class DummyProgram {
     private static class Send implements Runnable {
 
         private PrintWriter output;
-        ConcurrentLinkedQueue<String> queue;
+        ConcurrentLinkedQueue<Message> queue;
 
         public Send(PrintWriter output, ConcurrentLinkedQueue loopbackQueue){
             this.output = output;
@@ -47,7 +47,7 @@ public class DummyProgram {
                         output.println(m.toString());
                     }
                     while(!queue.isEmpty()){
-                        output.println(queue.remove());
+                        output.println(queue.remove().toString());
                     }
                 }
             } catch (Exception e){
@@ -59,7 +59,7 @@ public class DummyProgram {
     private static class Receive implements Runnable {
 
         Scanner input;
-        ConcurrentLinkedQueue queue;
+        ConcurrentLinkedQueue<Message> queue;
 
         public Receive(Scanner input, ConcurrentLinkedQueue loopbackQueue){
             this.input = input;
@@ -76,7 +76,7 @@ public class DummyProgram {
                     System.out.println("Got user input:\n\t" + userMessage);
                     //System.out.println(m.toString());
                     String returnMessage = "Dummy got the input: " + m.getAttribute("message");
-                    queue.add((new Message("source=Dummy\nmessage=" + returnMessage)).toString());
+                    queue.add((new Message("source=Dummy\nmessage=" + returnMessage)));
                     userMessage = "";
                 } else {
                     userMessage += line + "\n";
