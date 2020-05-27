@@ -1,4 +1,4 @@
-package com.zanderwohl.util;
+package util;
 
 import java.util.HashMap;
 import java.util.Set;

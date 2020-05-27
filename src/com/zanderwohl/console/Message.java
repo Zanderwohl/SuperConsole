@@ -1,6 +1,6 @@
 package com.zanderwohl.console;
 
-import com.zanderwohl.util.Properties;
+import util.Properties;
 
 import java.util.HashMap;
 

@@ -1,10 +1,11 @@
 package com.zanderwohl.console.tests;
 
-import com.zanderwohl.util.Properties;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+import util.Properties;
 
 import java.util.HashMap;
+
+import static org.junit.Assert.assertEquals;
 
 public class TestProperties {
 
