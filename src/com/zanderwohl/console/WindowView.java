@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -102,7 +103,8 @@ public class WindowView implements Runnable {
     }
 
     public void submitUserInput(String input, String source){
-        Message m = new Message("severity=user\nmessage=" + input + "\nsource=" + source);
+        Message m = new Message("severity=user\nmessage=" + input + "\nsource=" + source +
+                "\ntime=" + Instant.now().getEpochSecond());
         userQueue.add(m);
     }
 

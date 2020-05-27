@@ -76,7 +76,8 @@ public class DummyProgram {
                     System.out.println("Got user input:\n\t" + userMessage);
                     //System.out.println(m.toString());
                     String returnMessage = "Dummy got the input: " + m.getAttribute("message");
-                    queue.add((new Message("source=Dummy\nmessage=" + returnMessage)));
+                    queue.add((new Message("source=Dummy\nmessage=" + returnMessage
+                            + "\ntime=" + Instant.now().getEpochSecond())));
                     userMessage = "";
                 } else {
                     userMessage += line + "\n";
