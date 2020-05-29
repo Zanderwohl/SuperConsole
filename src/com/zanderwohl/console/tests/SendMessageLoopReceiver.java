@@ -1,6 +1,6 @@
 package com.zanderwohl.console.tests;
 
-import com.zanderwohl.console.Main;
+import com.zanderwohl.console.SuperConsole;
 import com.zanderwohl.console.Message;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class SendMessageLoopReceiver {
 
     public static void main(String[] args) throws Exception{
-        try (var listener = new ServerSocket(Main.PORT)){
+        try (var listener = new ServerSocket(SuperConsole.PORT)){
             System.out.println("SendMessageLoopReciever is running.");
             var pool = Executors.newFixedThreadPool(20);
             while(true){

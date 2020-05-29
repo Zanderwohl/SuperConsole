@@ -1,6 +1,6 @@
 package com.zanderwohl.console.tests;
 
-import com.zanderwohl.console.Main;
+import com.zanderwohl.console.SuperConsole;
 import com.zanderwohl.console.Message;
 
 import java.io.PrintWriter;
@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class DummyProgram {
 
     public static void main(String[] args) throws Exception {
-        try (var listener = new ServerSocket(Main.PORT)){
+        try (var listener = new ServerSocket(SuperConsole.PORT)){
             System.out.println("Dummy Program is running.");
             ConcurrentLinkedQueue<Message> loopbackQueue = new ConcurrentLinkedQueue<>();
             Socket socket = listener.accept();

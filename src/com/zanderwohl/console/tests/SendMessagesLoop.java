@@ -1,6 +1,6 @@
 package com.zanderwohl.console.tests;
 
-import com.zanderwohl.console.Main;
+import com.zanderwohl.console.SuperConsole;
 import com.zanderwohl.console.Message;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ public class SendMessagesLoop {
         boolean loopAgain = true;
 
         try {
-            socket = new Socket("localhost", Main.PORT);
+            socket = new Socket("localhost", SuperConsole.PORT);
             input = new Scanner(socket.getInputStream());
             output = new PrintWriter(socket.getOutputStream(), true);
 

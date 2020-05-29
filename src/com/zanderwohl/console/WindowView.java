@@ -30,7 +30,7 @@ public class WindowView implements Runnable {
         this.frame = new JFrame();
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                Main.close();
+                SuperConsole.close();
             }
         });
 

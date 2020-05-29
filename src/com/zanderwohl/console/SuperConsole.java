@@ -7,9 +7,43 @@ import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Main {
+public class SuperConsole implements Runnable{
 
     public static final int PORT = 288;
+
+    public SuperConsole(){
+        //TODO: Move construction of queues here, and make them class variables.
+    }
+
+    @Override
+    public void run() {
+        ConcurrentLinkedQueue<Message> networkQueue = new ConcurrentLinkedQueue<Message>();
+        ConcurrentLinkedQueue<Message> userQueue = new ConcurrentLinkedQueue<Message>();
+        CopyOnWriteArrayList<Message> messages = new CopyOnWriteArrayList<Message>();
+        ConcurrentLinkedQueue<Message> modelSendQueue = new ConcurrentLinkedQueue<Message>();
+
+
+        PrintWriter output = null;
+        try { //TODO: Don't put ALL this code in one try/catch.
+            Socket socket = new Socket("localhost", SuperConsole.PORT);
+            Scanner input = new Scanner(socket.getInputStream());
+            output = new PrintWriter(socket.getOutputStream(), true);
+
+            Thread sender = new Thread(new Sender(modelSendQueue, output));
+            Thread receiver = new Thread(new Receiver(networkQueue, input));
+            Thread consoleModel = new Thread(new ConsoleModel(networkQueue, userQueue, messages, modelSendQueue));
+            Thread view = new Thread(new WindowView(messages, userQueue));
+
+            sender.start();
+            receiver.start();
+            consoleModel.start();
+            view.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
     public static void main(String[] args) throws IOException {
         ConcurrentLinkedQueue<Message> networkQueue = new ConcurrentLinkedQueue<Message>();
@@ -17,7 +51,7 @@ public class Main {
         CopyOnWriteArrayList<Message> messages = new CopyOnWriteArrayList<Message>();
         ConcurrentLinkedQueue<Message> modelSendQueue = new ConcurrentLinkedQueue<Message>();
 
-        Socket socket = new Socket("localhost", Main.PORT);
+        Socket socket = new Socket("localhost", SuperConsole.PORT);
         Scanner input = new Scanner(socket.getInputStream());
         PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
 
