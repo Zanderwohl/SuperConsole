@@ -1,5 +1,7 @@
 package com.zanderwohl.console;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import util.Properties;
 
 import java.util.HashMap;
@@ -55,6 +57,36 @@ public class Message {
             int timestamp_int = Integer.parseInt(timestamp_);
             timestamp = timestamp_int;
         }
+    }
+
+    public Message(JSONObject msg){
+        try {
+            category = msg.getString("category");
+        } catch(JSONException e){
+
+        }
+        try {
+            severity = severities.valueOf(msg.getString("severity").toUpperCase());
+        } catch(JSONException e){
+
+        }
+        try {
+            message = msg.getString("message");
+        } catch(JSONException e){
+
+        }
+        try {
+            source = msg.getString("source");
+        } catch(JSONException e){
+
+        }
+        try {
+            timestamp = Integer.parseInt(msg.getString("time"));
+        } catch(JSONException e){
+
+        }
+
+
     }
 
     /**
