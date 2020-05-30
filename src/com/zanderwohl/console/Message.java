@@ -56,6 +56,8 @@ public class Message {
         if(timestamp_ != null){
             int timestamp_int = Integer.parseInt(timestamp_);
             timestamp = timestamp_int;
+        } else {
+            timestamp = (int)System.currentTimeMillis();
         }
     }
 
@@ -83,7 +85,7 @@ public class Message {
         try {
             timestamp = Integer.parseInt(msg.getString("time"));
         } catch(JSONException e){
-
+            timestamp = (int)System.currentTimeMillis();
         }
 
 

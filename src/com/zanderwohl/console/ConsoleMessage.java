@@ -3,6 +3,8 @@ package com.zanderwohl.console;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 public class ConsoleMessage extends JPanel {
 
@@ -28,7 +30,12 @@ public class ConsoleMessage extends JPanel {
         category = new JLabel(m.getAttribute("category"));
         message = new JLabel(m.getAttribute("message"));
         source = new JLabel(m.getAttribute("source"));
-        time = new JLabel(m.getAttribute("time"));
+
+        DateFormat f = new SimpleDateFormat("HH:mm:ss");
+        long time_long = Long.parseLong(m.getAttribute("time")) * 1000;
+        String time_string = f.format(time_long);
+        time = new JLabel(time_string);
+
         severity = new JLabel(m.getAttribute("severity"));
 
         JLabel[] set = {this.index, category, source, time, severity};
