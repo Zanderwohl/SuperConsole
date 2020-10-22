@@ -45,6 +45,12 @@ public class ConsoleMessage extends JPanel {
             j.setMaximumSize(d);
             j.setMinimumSize(d);
         }
+
+        d = new Dimension(100, 40);
+        source.setMinimumSize(d);
+        source.setMaximumSize(d);
+        source.setPreferredSize(d);
+
         message.setMinimumSize(new Dimension(200, 40));
 
         if(index == -1){
@@ -90,7 +96,7 @@ public class ConsoleMessage extends JPanel {
             label.setForeground(Color.GREEN);
         }
         if(severity.equals(Message.severities.CONSOLE.toString())){
-            label.setForeground(Color.orange);
+            label.setForeground(Color.ORANGE);
         }
         if(severity.equals(Message.severities.USER.toString())){
             label.setForeground(Color.BLUE);
