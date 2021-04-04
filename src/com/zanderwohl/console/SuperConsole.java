@@ -51,7 +51,7 @@ public class SuperConsole implements Runnable{
         CopyOnWriteArrayList<Message> messages = new CopyOnWriteArrayList<Message>();
         ConcurrentLinkedQueue<Message> modelSendQueue = new ConcurrentLinkedQueue<Message>();
 
-        Socket socket = new Socket("localhost", SuperConsole.PORT);
+        Socket socket = new Socket("localhost", SuperConsole.PORT); //If Connection Refused: Connect, start DummyProgram or another "server"
         Scanner input = new Scanner(socket.getInputStream());
         PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
 

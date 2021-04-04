@@ -10,21 +10,30 @@ public class ConsoleMessage extends JPanel {
 
     private static final int height = 40;
 
+    public final int indexInt;
     JLabel index;
     JLabel category;
     JLabel message;
     JLabel source;
     JLabel time;
     JLabel severity;
+    public final Message m;
+
+    public static Color selectedColor = new Color(219, 144, 144);
+    public static Color nonSelectedColor = new Color(206, 206, 206);
 
     public ConsoleMessage(Message m, int index){
         super();
+        this.m = m;
+        indexInt = index;
         this.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         this.setPreferredSize(new Dimension(400, height));
         this.setMaximumSize(new Dimension(Integer.MAX_VALUE, height));
         this.setMinimumSize(new Dimension(300, height));
         this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+
+        this.setBackground(nonSelectedColor);
 
         this.index = new JLabel(index + "");
         category = new JLabel(m.getAttribute("category"));
@@ -101,5 +110,13 @@ public class ConsoleMessage extends JPanel {
         if(severity.equals(Message.severities.USER.toString())){
             label.setForeground(Color.BLUE);
         }
+    }
+
+    public void select(){
+        this.setBackground(selectedColor);
+    }
+
+    public void deselect(){
+        this.setBackground(nonSelectedColor);
     }
 }
