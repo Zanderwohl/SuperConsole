@@ -53,6 +53,11 @@ public class SendMessagesLoop {
         return blankMessage.toString();
     }
 
+    public static String multilineMessage(){
+        Message message = new Message("time=" + Instant.now().getEpochSecond() + "\nmessage=This is a multiline message.\\nLine 2\\nLine 3 which is a little bit longer than the last.\\nLine 4");
+        return message.toString();
+    }
+
     public static String randomSeverityBlankMessage(){
         Random r = new Random();
         int length = Message.severities.values().length;

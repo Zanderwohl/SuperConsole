@@ -39,11 +39,13 @@ public class DummyProgram {
         public void run(){
             long nextSend = Instant.now().getEpochSecond() + 1;
             try {
+                Message m = new Message(SendMessagesLoop.multilineMessage());
+                output.println(m.toString());
                 while(true){
                     if(nextSend == Instant.now().getEpochSecond()){
                         nextSend = Instant.now().getEpochSecond() + 10;
                         System.out.println("Sending packet.");
-                        Message m = new Message(SendMessagesLoop.blankMessage());
+                        m = new Message(SendMessagesLoop.blankMessage());
                         output.println(m.toString());
                     }
                     while(!queue.isEmpty()){

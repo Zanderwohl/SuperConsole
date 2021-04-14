@@ -138,7 +138,7 @@ public class Message {
             return severity.toString();
         }
         if(key.equalsIgnoreCase("message")){
-            return message;
+            return message.replaceAll("\\\\n","\n");
         }
         if(key.equalsIgnoreCase("source")){
             return source;
