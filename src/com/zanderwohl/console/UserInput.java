@@ -17,6 +17,7 @@ public class UserInput extends JPanel {
 
     CircularQueue<String> history;
     int historyIndex = 0;
+    String unfinishedCommand = "";
 
     Action buttonEnter = new AbstractAction() {
         @Override
@@ -52,6 +53,9 @@ public class UserInput extends JPanel {
     Action lastCommand = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if(historyIndex == 0){
+                unfinishedCommand = input.getText();
+            }
             if(historyIndex < history.size()) {
                 historyIndex++;
             }
@@ -65,10 +69,15 @@ public class UserInput extends JPanel {
     Action nextCommand = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (historyIndex > 1) {
+            if (historyIndex > 0) {
                 historyIndex--;
             }
-            String historyItem = history.peek(historyIndex - 1);
+            String historyItem;
+            if(historyIndex == 0){
+                historyItem = unfinishedCommand;
+            } else {
+                historyItem = history.peek(historyIndex - 1);
+            }
             if(historyItem != null){
                 input.setText(historyItem);
             }
