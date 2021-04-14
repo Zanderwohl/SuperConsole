@@ -37,7 +37,8 @@ public class ConsoleMessage extends JPanel {
 
         this.index = new JLabel(index + "");
         category = new JLabel(m.getAttribute("category"));
-        message = new JLabel(m.getAttribute("message"));
+        String[] splitMessage = m.getAttribute("message").split("\\n");
+        message = new JLabel(splitMessage[0] + (splitMessage.length > 1 ? " [...]" : ""));
         source = new JLabel(m.getAttribute("source"));
 
         DateFormat f = new SimpleDateFormat("HH:mm:ss");
