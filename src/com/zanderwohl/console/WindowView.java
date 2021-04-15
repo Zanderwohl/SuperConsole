@@ -72,16 +72,19 @@ public class WindowView implements Runnable {
 
         JMenuItem connect = new JMenuItem("New Connection");
         connect.setMnemonic(KeyEvent.VK_N);
+        connect.getAccessibleContext().setAccessibleDescription("Start a new connection with a server.");
         menu.add(connect);
 
         JMenuItem disconnect = new JMenuItem("Disconnect");
         disconnect.setMnemonic(KeyEvent.VK_D);
+        connect.getAccessibleContext().setAccessibleDescription("End the current connection.");
         menu.add(disconnect);
 
         menu.addSeparator();
 
         JMenuItem exit = new JMenuItem("Exit");
         exit.setMnemonic(KeyEvent.VK_E);
+        exit.getAccessibleContext().setAccessibleDescription("Exit the console, ending current connection.");
         menu.add(exit);
 
         menuBar.add(menu);

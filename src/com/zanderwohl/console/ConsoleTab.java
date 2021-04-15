@@ -91,7 +91,7 @@ public class ConsoleTab extends JPanel {
         messageDetailSource = new ValueLabel("Source");
         messageDetailTime = new ValueLabel("Time");
         messageDetailSeverity = new ValueLabel("Severity");
-        messageDetailMessage = new JTextArea("THE MESSAGE WHICH CANST");
+        messageDetailMessage = new JTextArea("");
         ((JTextArea) messageDetailMessage).setLineWrap(true);
         ((JTextArea) messageDetailMessage).setWrapStyleWord(true);
         //((JTextArea) messageDetailMessage).setColumns(30);
