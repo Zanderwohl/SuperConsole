@@ -1,5 +1,6 @@
 package com.zanderwohl.console;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -17,12 +18,8 @@ public class SuperConsole{
         Thread windowThread = new Thread(window);
         windowThread.start();
 
-        //TODO: Remove this once all connections are optional
-        try {
-            newConnection("Localhost:" + PORT, "localhost", PORT);
-        } catch (IOException e){
-            e.printStackTrace();
-        }
+        //TODO: remove
+        //newConnection("Localhost:" + PORT, "localhost", PORT);
 
         Thread connectionManagerThread = new Thread(new ConnectionManager(connections));
         connectionManagerThread.start();
@@ -32,10 +29,14 @@ public class SuperConsole{
         SuperConsole sc = new SuperConsole();
     }
 
-    public void newConnection(String name, String host, int port) throws IOException{
-        Connection newConnection = new Connection(name, host, port);
-        window.addTab(newConnection.tab());
-        connections.add(newConnection);
+    public void newConnection(String name, String host, int port) {
+        try {
+            Connection newConnection = new Connection(name, host, port);
+            window.addTab(newConnection.tab());
+            connections.add(newConnection);
+        } catch (IOException ioException) {
+            new ErrorWindow(ioException.getMessage());
+        }
     }
 
     public void closeConnection(Connection c){
@@ -43,8 +44,12 @@ public class SuperConsole{
         c.close();
     }
 
-    public static void close(){
-        System.exit(0);
+    public void quit(){
+        quit(0);
+    }
+
+    public void quit(int status){
+        System.exit(status);
     }
 
     private class ConnectionManager implements Runnable {

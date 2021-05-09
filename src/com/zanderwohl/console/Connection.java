@@ -132,15 +132,20 @@ public class Connection {
         @Override
         public void run(){
             System.out.println("Receiver is running.");
-            while(true){
-                StringBuilder message = new StringBuilder();
-                while(programInput.hasNextLine()){
-                    String line = programInput.nextLine();
-                    message.append("\n").append(line);
-                    if(line.equals("EOM")) {
-                        fromProgram.add(new Message(message.toString()));
-                        message = new StringBuilder();
+            boolean running = true;
+            StringBuilder message = new StringBuilder();
+            while(running){
+                try{
+                    while(programInput.hasNextLine()){
+                        String line = programInput.nextLine();
+                        message.append("\n").append(line);
+                        if(line.equals("EOM")) {
+                            fromProgram.add(new Message(message.toString()));
+                            message = new StringBuilder();
+                        }
                     }
+                } catch (IllegalStateException e) {
+                    running = false;
                 }
             }
         }

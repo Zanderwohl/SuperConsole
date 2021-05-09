@@ -5,9 +5,7 @@ import com.zanderwohl.console.tab.Tab;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +28,7 @@ public class WindowView implements Runnable {
         this.frame = new JFrame();
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                SuperConsole.close();
+                parent.quit();
             }
         });
 
@@ -76,11 +74,24 @@ public class WindowView implements Runnable {
         connect.setMnemonic(KeyEvent.VK_N);
         connect.getAccessibleContext().setAccessibleDescription("Start a new connection with a server.");
         menu.add(connect);
+        connect.addActionListener(e -> {
+            new NewConnectionWindow(parent);
+        });
 
         JMenuItem disconnect = new JMenuItem("Disconnect");
         disconnect.setMnemonic(KeyEvent.VK_D);
         connect.getAccessibleContext().setAccessibleDescription("End the current connection.");
         menu.add(disconnect);
+        disconnect.addActionListener(e -> {
+            Tab activeTab = (Tab) tabbedPane.getSelectedComponent();
+            if(activeTab instanceof ConsoleTab){
+                ConsoleTab consoleTab = (ConsoleTab) activeTab;
+                Connection c = consoleTab.getAssociatedConnection();
+                removeTab(activeTab);
+                parent.closeConnection(c);
+            }
+
+        });
 
         menu.addSeparator();
 
@@ -88,6 +99,9 @@ public class WindowView implements Runnable {
         exit.setMnemonic(KeyEvent.VK_E);
         exit.getAccessibleContext().setAccessibleDescription("Exit the console, ending current connection.");
         menu.add(exit);
+        exit.addActionListener(e -> {
+            parent.quit();
+        });
 
         menuBar.add(menu);
     }
