@@ -40,8 +40,17 @@ public class WindowView implements Runnable {
         JMenuBar menuBar = new JMenuBar();
         addFileMenu(menuBar);
         frame.setJMenuBar(menuBar);
+        frame.setTitle("SuperConsole");
 
         tabbedPane = new JTabbedPane();
+        tabbedPane.addChangeListener(e ->{
+            Tab tab = (Tab) tabbedPane.getSelectedComponent();
+            if(tab == null){
+                frame.setTitle("SuperConsole");
+            } else {
+                this.frame.setTitle("SuperConsole: " + tab.name);
+            }
+        });
 
         frame.add(tabbedPane, BorderLayout.CENTER);
         frame.setPreferredSize(new Dimension(600, 400));
