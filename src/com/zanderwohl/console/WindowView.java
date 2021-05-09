@@ -82,6 +82,20 @@ public class WindowView implements Runnable {
             new NewConnectionWindow(parent);
         });
 
+        JMenu quickConnect = new JMenu("Quick Connect");
+        quickConnect.setMnemonic(KeyEvent.VK_Q);
+        menu.add(quickConnect);
+        quickConnect.setEnabled(false);
+
+        //TODO: Make this settings-able
+        JMenuItem localConnect = new JMenuItem("Local Default");
+        localConnect.setMnemonic(KeyEvent.VK_L);
+        quickConnect.add(localConnect);
+        quickConnect.setEnabled(true);
+        localConnect.addActionListener(e -> {
+            parent.newConnection("Local Server", "localhost", 288);
+        });
+
         JMenuItem disconnect = new JMenuItem("Disconnect");
         disconnect.setMnemonic(KeyEvent.VK_D);
         connect.getAccessibleContext().setAccessibleDescription("End the current connection.");
@@ -95,6 +109,8 @@ public class WindowView implements Runnable {
                 parent.closeConnection(c);
             }
         });
+
+
 
         menu.addSeparator();
 
