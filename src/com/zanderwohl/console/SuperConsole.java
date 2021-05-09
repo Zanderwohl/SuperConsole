@@ -1,159 +1,67 @@
 package com.zanderwohl.console;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.Scanner;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class SuperConsole implements Runnable{
+public class SuperConsole{
 
+    //TODO: Remove this once all connections are optional.
     public static final int PORT = 288;
+    public WindowView window;
+    public CopyOnWriteArrayList<Connection> connections;
 
     public SuperConsole(){
-        //TODO: Move construction of queues here, and make them class variables.
-    }
+        connections = new CopyOnWriteArrayList<>();
+        window = new WindowView(this);
+        Thread windowThread = new Thread(window);
+        windowThread.start();
 
-    @Override
-    public void run() {
-        ConcurrentLinkedQueue<Message> networkQueue = new ConcurrentLinkedQueue<Message>();
-        ConcurrentLinkedQueue<Message> userQueue = new ConcurrentLinkedQueue<Message>();
-        CopyOnWriteArrayList<Message> messages = new CopyOnWriteArrayList<Message>();
-        ConcurrentLinkedQueue<Message> modelSendQueue = new ConcurrentLinkedQueue<Message>();
-
-
-        PrintWriter output = null;
-        try { //TODO: Don't put ALL this code in one try/catch.
-            Socket socket = new Socket("localhost", SuperConsole.PORT);
-            Scanner input = new Scanner(socket.getInputStream());
-            output = new PrintWriter(socket.getOutputStream(), true);
-
-            Thread sender = new Thread(new Sender(modelSendQueue, output));
-            Thread receiver = new Thread(new Receiver(networkQueue, input));
-            Thread consoleModel = new Thread(new ConsoleModel(networkQueue, userQueue, messages, modelSendQueue));
-            Thread view = new Thread(new WindowView(messages, userQueue));
-
-            sender.start();
-            receiver.start();
-            consoleModel.start();
-            view.start();
-        } catch (IOException e) {
+        //TODO: Remove this once all connections are optional
+        try {
+            newConnection("Localhost:" + PORT, "localhost", PORT);
+        } catch (IOException e){
             e.printStackTrace();
         }
 
-
+        Thread connectionManagerThread = new Thread(new ConnectionManager(connections));
+        connectionManagerThread.start();
     }
 
-    public static void main(String[] args) throws IOException {
-        ConcurrentLinkedQueue<Message> networkQueue = new ConcurrentLinkedQueue<Message>();
-        ConcurrentLinkedQueue<Message> userQueue = new ConcurrentLinkedQueue<Message>();
-        CopyOnWriteArrayList<Message> messages = new CopyOnWriteArrayList<Message>();
-        ConcurrentLinkedQueue<Message> modelSendQueue = new ConcurrentLinkedQueue<Message>();
+    public static void main(String[] args) {
+        SuperConsole sc = new SuperConsole();
+    }
 
-        Socket socket = new Socket("localhost", SuperConsole.PORT); //If Connection Refused: Connect, start DummyProgram or another "server"
-        Scanner input = new Scanner(socket.getInputStream());
-        PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
+    public void newConnection(String name, String host, int port) throws IOException{
+        Connection newConnection = new Connection(name, host, port);
+        window.addTab(newConnection.tab());
+        connections.add(newConnection);
+    }
 
-        Thread sender = new Thread(new Sender(modelSendQueue, output));
-        Thread receiver = new Thread(new Receiver(networkQueue, input));
-        Thread consoleModel = new Thread(new ConsoleModel(networkQueue, userQueue, messages, modelSendQueue));
-        Thread view = new Thread(new WindowView(messages, userQueue));
-
-        sender.start();
-        receiver.start();
-        consoleModel.start();
-        view.start();
+    public void closeConnection(Connection c){
+        connections.remove(c);
+        c.close();
     }
 
     public static void close(){
         System.exit(0);
     }
 
-    private static class Receiver implements Runnable {
+    private class ConnectionManager implements Runnable {
 
-        ConcurrentLinkedQueue<Message> networkQueue;
+        public CopyOnWriteArrayList<Connection> connections;
 
-        Scanner input;
-
-        public Receiver(ConcurrentLinkedQueue<Message> networkQueue, Scanner input){
-            this.networkQueue = networkQueue;
-            this.input = input;
-
+        public ConnectionManager(CopyOnWriteArrayList<Connection> connections){
+            this.connections = connections;
         }
 
         @Override
         public void run() {
-            System.out.println("Receiver is running.");
-            while(true){
-                StringBuilder message = new StringBuilder();
-                while(input.hasNextLine()){
-                    String line = input.nextLine();
-                    message.append("\n").append(line);
-                    if(line.equals("EOM")) {
-                        networkQueue.add(new Message(message.toString()));
-                        message = new StringBuilder();
-                    }
+            while(true) {
+                for (Connection c : connections) {
+                    c.update();
                 }
             }
         }
     }
-
-    private static class Sender implements Runnable {
-
-        ConcurrentLinkedQueue<Message> modelSendQueue;
-        PrintWriter output;
-
-        public Sender(ConcurrentLinkedQueue<Message> modelSendQueue,
-                      PrintWriter output){
-            this.modelSendQueue = modelSendQueue;
-            this.output = output;
-        }
-
-        @Override
-        public void run() {
-            while(true){
-                while(!modelSendQueue.isEmpty()){
-                    Message message = modelSendQueue.remove();
-                    output.println(message.toString());
-                }
-            }
-        }
-    }
-
-    private static class ConsoleModel implements Runnable {
-        ConcurrentLinkedQueue<Message> networkQueue;
-        ConcurrentLinkedQueue<Message> userQueue;
-
-        ConcurrentLinkedQueue<Message> modelSendQueue;
-
-        CopyOnWriteArrayList<Message> messages;
-
-
-        public ConsoleModel(ConcurrentLinkedQueue<Message> networkQueue,
-                            ConcurrentLinkedQueue<Message> userQueue,
-                            CopyOnWriteArrayList<Message> messages,
-                            ConcurrentLinkedQueue<Message> modelSendQueue){
-            this.networkQueue = networkQueue;
-            this.userQueue = userQueue;
-            this.messages = messages;
-            this.modelSendQueue = modelSendQueue;
-        }
-
-        @Override
-        public void run() {
-            while(true){
-                while(!networkQueue.isEmpty()){
-                    Message message = networkQueue.remove();
-                    messages.add(message);
-                }
-                while(!userQueue.isEmpty()){
-                    Message message = userQueue.remove();
-                    modelSendQueue.add(message);
-                    messages.add(message);
-                }
-            }
-        }
-    }
-
 }

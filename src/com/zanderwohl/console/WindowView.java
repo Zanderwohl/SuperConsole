@@ -1,5 +1,8 @@
 package com.zanderwohl.console;
 
+import com.zanderwohl.console.tab.ConsoleTab;
+import com.zanderwohl.console.tab.Tab;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -7,26 +10,23 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class WindowView implements Runnable {
 
-    CopyOnWriteArrayList<Message> messages;
-    ConcurrentLinkedQueue<Message> userQueue;
+    SuperConsole parent;
 
     JFrame frame;
-    ArrayList<ConsoleTab> panels = new ArrayList<>();
+    ArrayList<Tab> tabs = new ArrayList<>();
 
     JTabbedPane tabbedPane;
 
-    int messagesLengthPrevious = 0;
+    public WindowView(SuperConsole parent){
 
-    public WindowView(CopyOnWriteArrayList<Message> messages, ConcurrentLinkedQueue<Message> userQueue){
-        this.messages = messages;
-        this.userQueue = userQueue;
-
+        this.parent = parent;
         this.frame = new JFrame();
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -45,23 +45,25 @@ public class WindowView implements Runnable {
 
         tabbedPane = new JTabbedPane();
 
-        String consoleName = "Console";
-        String blankName = "Blank";
-
-        ConsoleTab firstPanel = new ConsoleTab(this, consoleName);
-        ConsoleTab secondPanel = new ConsoleTab(this, blankName);
-        panels.add(firstPanel);
-        tabbedPane.addTab(consoleName, firstPanel);
-        panels.add(secondPanel);
-        tabbedPane.addTab(blankName, secondPanel);
-
-        //for(JPanel panel: panels) {
-        //    tabbedPane.addTab("Console", panel);
-        //}
-
         frame.add(tabbedPane, BorderLayout.CENTER);
         frame.setPreferredSize(new Dimension(600, 400));
         frame.pack();
+    }
+
+    public void addTab(Tab tab){
+        tabbedPane.addTab(tab.name, tab);
+        tabs.add(tab);
+        tab.setParent(this);
+
+        if(tab instanceof ConsoleTab){
+            ConsoleTab consoleTab = (ConsoleTab) tab;
+            Connection connection = consoleTab.getAssociatedConnection();
+        }
+    }
+
+    public void removeTab(Tab tab){
+        tabbedPane.remove(tab);
+        tabs.remove(tab);
     }
 
     private void addFileMenu(JMenuBar menuBar){
@@ -91,26 +93,38 @@ public class WindowView implements Runnable {
     }
 
     public void updateGUI(){
-        int end = messages.size();
-        if(messagesLengthPrevious < end){
-            for(int i = messagesLengthPrevious; i < end; i++){
-                Message m = messages.get(i);
-                panels.get(0).addMessage(m);
+        Tab activeTab = (Tab) tabbedPane.getSelectedComponent();
+        if(activeTab == null){
+            return;
+        }
+        activeTab.screenUpdate();
+
+        if(activeTab instanceof ConsoleTab){
+            ConsoleTab consoleTab = (ConsoleTab) activeTab;
+            CopyOnWriteArrayList<Message> messages = consoleTab.getAssociatedConnection().messageHistory;
+            if(messages != null) {
+                int end = messages.size();
+                if (consoleTab.messagesLengthPrevious < end) {
+                    for (int i = consoleTab.messagesLengthPrevious; i < end; i++) {
+                        Message m = messages.get(i);
+                        consoleTab.addMessage(m);
+                    }
+                }
+
+                consoleTab.messagesLengthPrevious = messages.size();
             }
         }
-
-        messagesLengthPrevious = messages.size();
-
-
-        panels.get(0).screenUpdate();
     }
 
     public void submitUserInput(String input, String source){
         Message m = new Message("severity=user\nmessage=" + input + "\nsource=" + source +
                 "\ntime=" + Instant.now().getEpochSecond());
-        userQueue.add(m);
+        Tab activeTab = (Tab) tabbedPane.getSelectedComponent();
+        if(activeTab == null){
+            return;
+        }
+        activeTab.acceptUserInput(m);
     }
-
 
     @Override
     public void run() {
@@ -119,11 +133,9 @@ public class WindowView implements Runnable {
             updateGUI();
             try {
                 TimeUnit.MILLISECONDS.sleep(20);
-                //System.out.println();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //updateGUI(); //down here, we wait for the other threads updating first.
         }
     }
 }

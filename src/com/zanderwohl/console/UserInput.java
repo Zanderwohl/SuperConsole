@@ -1,5 +1,6 @@
 package com.zanderwohl.console;
 
+import com.zanderwohl.console.tab.ConsoleTab;
 import com.zanderwohl.util.structures.CircularQueue;
 
 import javax.swing.*;

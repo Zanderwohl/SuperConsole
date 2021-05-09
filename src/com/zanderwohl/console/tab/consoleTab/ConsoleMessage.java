@@ -1,4 +1,6 @@
-package com.zanderwohl.console;
+package com.zanderwohl.console.tab.consoleTab;
+
+import com.zanderwohl.console.Message;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -15,7 +17,7 @@ public class ConsoleMessage extends JPanel {
     JLabel category;
     JLabel message;
     JLabel source;
-    JLabel time;
+    protected JLabel time;
     JLabel severity;
     public final Message m;
 

@@ -1,7 +1,7 @@
-package com.zanderwohl.console;
+package com.zanderwohl.console.tab;
 
-import com.sun.jdi.Value;
-import org.junit.runners.Parameterized;
+import com.zanderwohl.console.*;
+import com.zanderwohl.console.tab.consoleTab.ConsoleMessage;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -9,10 +9,11 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class ConsoleTab extends JPanel {
+public class ConsoleTab extends Tab {
 
-    WindowView parent;
-    String tabName = "Console";
+    WindowView parent = null;
+    private Connection associatedConnection = null;
+    String tabName;
 
     JPanel messagePanel;
     JScrollBar scrollbar;
@@ -34,6 +35,11 @@ public class ConsoleTab extends JPanel {
 
     int messagesCount = 0;
 
+    /**
+     * For use in windowView.
+     */
+    public int messagesLengthPrevious = 0;
+
     ConsoleMessage currentlySelectedMessage = null;
     public MouseAdapter consoleMessageClicked = new MouseAdapter() {
         @Override
@@ -48,17 +54,17 @@ public class ConsoleTab extends JPanel {
                 ((ValueLabel) messageDetailNumber).setValue(currentlySelectedMessage.indexInt + "");
                 ((ValueLabel) messageDetailCategory).setValue(currentlySelectedMessage.m.getAttribute("category"));
                 ((ValueLabel) messageDetailSource).setValue(currentlySelectedMessage.m.getAttribute("source"));
-                ((ValueLabel) messageDetailTime).setValue(currentlySelectedMessage.time.getText());
+                ((ValueLabel) messageDetailTime).setValue(currentlySelectedMessage.m.getAttribute("time"));
                 ((ValueLabel) messageDetailSeverity).setValue(currentlySelectedMessage.m.getAttribute("severity"));
                 ((JTextArea) messageDetailMessage).setText(currentlySelectedMessage.m.getAttribute("message"));
             }
         }
     };
 
-    public ConsoleTab(WindowView parent, String name){
-        super();
+    public ConsoleTab(String name, Connection associatedConnection){
+        super(name);
+        this.associatedConnection = associatedConnection;
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        this.parent = parent;
         this.tabName = name;
 
         header = new ConsoleMessage(new Message(""), -1);
@@ -123,11 +129,6 @@ public class ConsoleTab extends JPanel {
         g.insets = new Insets(2,2,2,5);
         g.gridheight = 5;
         g.anchor = GridBagConstraints.LINE_END;
-        //JScrollPane detailScrollPane = new JScrollPane();
-        //detailScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        //detailScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        //detail.add(detailScrollPane, g);
-        //detailScrollPane.add(messageDetailMessage);
         detail.add(messageDetailMessage, g);
         footer.add(detail);
         testLabel = new JLabel("???");
@@ -136,6 +137,24 @@ public class ConsoleTab extends JPanel {
         autoScrollCheck = new JCheckBox("Auto-Scroll", true);
         autoScrollCheck.setToolTipText("Automatically scroll to bottom as new messages appear.");
         footer.add(autoScrollCheck);
+    }
+
+    public void setParent(WindowView parent){
+        this.parent = parent;
+    }
+
+    @Override
+    public void acceptUserInput(Message m) {
+        associatedConnection.acceptUserInput(m);
+    }
+
+    @Override
+    public boolean usesInputPane() {
+        return true;
+    }
+
+    public Connection getAssociatedConnection(){
+        return associatedConnection;
     }
 
     public void addMessage(Message m){
@@ -172,6 +191,8 @@ public class ConsoleTab extends JPanel {
     }
 
     public void submitUserInput(String input){
-        parent.submitUserInput(input, tabName);
+        if(parent != null) {
+            parent.submitUserInput(input, tabName);
+        }
     }
 }
