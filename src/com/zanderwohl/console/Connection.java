@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Connection {
 
@@ -35,15 +36,15 @@ public class Connection {
     /**
      * The server socket to communicate with the program through.
      */
-    private Socket socket;
+    private final Socket socket;
     /**
      * Input from the network from the connected program.
      */
-    private Scanner programInput;
+    private final Scanner programInput;
     /**
      * Output to the network to the connected program.
      */
-    private PrintWriter programOutput;
+    private final PrintWriter programOutput;
 
     /**
      * The UI tab displaying the messages.
@@ -54,7 +55,9 @@ public class Connection {
      */
     public final String name;
 
-    private Thread receiverThread;
+    private final Thread receiverThread;
+
+    private final AtomicBoolean running;
 
     /**
      * All the model and UI components that a connection needs.
@@ -64,6 +67,7 @@ public class Connection {
      * @param port The port the program to connect to can be reached at.
      */
     public Connection(String name, String host, int port) throws IOException {
+        running = new AtomicBoolean(true);
         this.name = name;
 
         fromProgram = new ConcurrentLinkedQueue<>();
@@ -75,7 +79,7 @@ public class Connection {
         programInput = new Scanner(socket.getInputStream());
         programOutput = new PrintWriter(socket.getOutputStream(), true);
 
-        receiverThread = new Thread(new Receiver(fromProgram, programInput));
+        receiverThread = new Thread(new Receiver(fromProgram, programInput, running));
         receiverThread.start();
     }
 
@@ -110,7 +114,7 @@ public class Connection {
     }
 
     public void close(){
-        programInput.close();
+        running.set(false);
         programOutput.close();
         try {
             socket.close();
@@ -119,22 +123,23 @@ public class Connection {
         }
     }
 
-    private class Receiver implements Runnable {
+    private static class Receiver implements Runnable {
+
         ConcurrentLinkedQueue<Message> fromProgram;
-
         Scanner programInput;
+        AtomicBoolean running;
 
-        public Receiver(ConcurrentLinkedQueue<Message> fromProgram, Scanner programInput){
+        public Receiver(ConcurrentLinkedQueue<Message> fromProgram, Scanner programInput, AtomicBoolean running){
             this.fromProgram = fromProgram;
             this.programInput = programInput;
+            this.running = running;
         }
 
         @Override
         public void run(){
             System.out.println("Receiver is running.");
-            boolean running = true;
             StringBuilder message = new StringBuilder();
-            while(running){
+            while(running.get()){
                 try{
                     while(programInput.hasNextLine()){
                         String line = programInput.nextLine();
@@ -145,9 +150,10 @@ public class Connection {
                         }
                     }
                 } catch (IllegalStateException e) {
-                    running = false;
+                    running.set(false);
                 }
             }
+            programInput.close();
         }
     }
 

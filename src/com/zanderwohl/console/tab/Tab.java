@@ -5,6 +5,9 @@ import com.zanderwohl.console.WindowView;
 
 import javax.swing.*;
 
+/**
+ * All tabs given to SuperConsole should inherit from this.
+ */
 public abstract class Tab extends JPanel {
 
     public final String name;

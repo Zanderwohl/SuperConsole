@@ -61,11 +61,6 @@ public class WindowView implements Runnable {
         tabbedPane.addTab(tab.name, tab);
         tabs.add(tab);
         tab.setParent(this);
-
-        if(tab instanceof ConsoleTab){
-            ConsoleTab consoleTab = (ConsoleTab) tab;
-            Connection connection = consoleTab.getAssociatedConnection();
-        }
     }
 
     public void removeTab(Tab tab){
@@ -99,7 +94,6 @@ public class WindowView implements Runnable {
                 removeTab(activeTab);
                 parent.closeConnection(c);
             }
-
         });
 
         menu.addSeparator();
