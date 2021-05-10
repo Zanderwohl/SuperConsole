@@ -18,9 +18,6 @@ public class SuperConsole{
         Thread windowThread = new Thread(window);
         windowThread.start();
 
-        //TODO: remove
-        //newConnection("Localhost:" + PORT, "localhost", PORT);
-
         Thread connectionManagerThread = new Thread(new ConnectionManager(connections));
         connectionManagerThread.start();
     }

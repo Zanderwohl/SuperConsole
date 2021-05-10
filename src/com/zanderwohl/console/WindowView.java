@@ -55,6 +55,12 @@ public class WindowView implements Runnable {
         frame.add(tabbedPane, BorderLayout.CENTER);
         frame.setPreferredSize(new Dimension(600, 400));
         frame.pack();
+
+        GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        int width = graphicsDevice.getDisplayMode().getWidth();
+        int height = graphicsDevice.getDisplayMode().getHeight();
+
+        frame.setLocation((width - frame.getWidth()) / 2, (height - frame.getHeight()) / 2);
     }
 
     public void addTab(Tab tab){

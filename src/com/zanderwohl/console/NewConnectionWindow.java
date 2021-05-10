@@ -24,6 +24,13 @@ public class NewConnectionWindow extends JFrame{
         this.setTitle("New Connection");
         this.setResizable(false);
         populateWindow();
+
+        GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        int width = graphicsDevice.getDisplayMode().getWidth();
+        int height = graphicsDevice.getDisplayMode().getHeight();
+
+        this.setLocation((width - this.getWidth()) / 2, (height - this.getHeight()) / 2);
+
         this.setVisible(true);
     }
     
