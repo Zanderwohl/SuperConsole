@@ -53,7 +53,7 @@ public class WindowView implements Runnable {
         });
 
         frame.add(tabbedPane, BorderLayout.CENTER);
-        frame.setPreferredSize(new Dimension(600, 400));
+        frame.setPreferredSize(new Dimension(710, 500)); //TODO: Below a certain size, not all UI elements show. Figure out why.
         frame.pack();
 
         GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
