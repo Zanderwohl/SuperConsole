@@ -183,15 +183,15 @@ public class Message {
      * Sets certain attributes, but only if they're not already defined.
      * @param key from, to
      */
-    public void setAttribute(String key){
+    public void setAttribute(String key, String value){
         if(key.equalsIgnoreCase("from")){
             if(from.equals("")){
-                from = key;
+                from = value;
             }
         }
         if(key.equalsIgnoreCase("to")){
             if(to.equals("")){
-                to = key;
+                to = value;
             }
         }
     }
