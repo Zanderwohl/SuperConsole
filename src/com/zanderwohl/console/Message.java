@@ -23,6 +23,8 @@ public class Message {
     private String source = "No Source.";
     private severities severity = severities.NORMAL;
     private int timestamp = 0;
+    private String from = "";
+    private String to = "";
 
     /**
      * Constructs a message based on a .properties format of "[key]=[value]" where each property is separated by
@@ -59,6 +61,14 @@ public class Message {
         } else {
             timestamp = (int)System.currentTimeMillis();
         }
+        String from_ = Properties.get(msgMap, "source");
+        if(from_ != null){
+            from = from_;
+        }
+        String to_ = Properties.get(msgMap, "source");
+        if(to_ != null){
+            to = to_;
+        }
     }
 
     public Message(JSONObject msg){
@@ -87,7 +97,16 @@ public class Message {
         } catch(JSONException e){
             timestamp = (int)System.currentTimeMillis();
         }
+        try {
+            to = msg.getString("to");
+        } catch(JSONException e){
 
+        }
+        try {
+            from = msg.getString("from");
+        } catch(JSONException e){
+
+        }
 
     }
 
@@ -111,6 +130,8 @@ public class Message {
                 nl(b) + "message=" + message +
                 nl(b) + "source=" + source +
                 nl(b) + "time=" + timestamp +
+                nl(b) + "from=" + from +
+                nl(b) + "to=" + to +
                 nl(b) + "EOM";
     }
 
@@ -130,8 +151,8 @@ public class Message {
 
     /**
      * TODO: Finish this.
-     * @param key
-     * @return
+     * @param key severity, message, source, time, category, from, to
+     * @return The value associated with the key.
      */
     public String getAttribute(String key){
         if(key.equalsIgnoreCase("severity")){
@@ -148,6 +169,12 @@ public class Message {
         }
         if(key.equalsIgnoreCase("category")){
             return category;
+        }
+        if(key.equalsIgnoreCase("from")){
+            return from;
+        }
+        if(key.equalsIgnoreCase("to")){
+            return to;
         }
         return "They key '" + key + "' is not an attribute of Message.";
     }
