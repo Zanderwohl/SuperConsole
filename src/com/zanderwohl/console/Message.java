@@ -178,4 +178,21 @@ public class Message {
         }
         return "They key '" + key + "' is not an attribute of Message.";
     }
+
+    /**
+     * Sets certain attributes, but only if they're not already defined.
+     * @param key from, to
+     */
+    public void setAttribute(String key){
+        if(key.equalsIgnoreCase("from")){
+            if(from.equals("")){
+                from = key;
+            }
+        }
+        if(key.equalsIgnoreCase("to")){
+            if(to.equals("")){
+                to = key;
+            }
+        }
+    }
 }
