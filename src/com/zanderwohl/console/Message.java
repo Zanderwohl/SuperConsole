@@ -2,7 +2,7 @@ package com.zanderwohl.console;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import util.Properties;
+import com.zanderwohl.util.Properties;
 
 import java.util.HashMap;
 
