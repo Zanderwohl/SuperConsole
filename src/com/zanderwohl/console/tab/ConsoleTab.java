@@ -163,12 +163,17 @@ public class ConsoleTab extends Tab {
         newMessage.addMouseListener(this.consoleMessageClicked);
         messagePanel.add(newMessage);
         testLabel.setText("Messages: " + messagesCount);
+
+        autoscroll();
     }
 
-    public void screenUpdate(){
+    public void autoscroll(){
         if(autoScrollCheck.isSelected()){
             scrollbar.setValue(scrollbar.getMaximum());
         }
+    }
+
+    public void screenUpdate(){
     }
 
     private Container buildMessageHorizontal(Message m, int index){
@@ -193,6 +198,7 @@ public class ConsoleTab extends Tab {
     public void submitUserInput(String input){
         if(parent != null) {
             parent.submitUserInput(input, tabName);
+            autoscroll();
         }
     }
 }

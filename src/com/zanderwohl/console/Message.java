@@ -59,7 +59,7 @@ public class Message {
             int timestamp_int = Integer.parseInt(timestamp_);
             timestamp = timestamp_int;
         } else {
-            timestamp = (int)System.currentTimeMillis();
+            timestamp = (int)System.currentTimeMillis() / 1000;
         }
         String from_ = Properties.get(msgMap, "source");
         if(from_ != null){
