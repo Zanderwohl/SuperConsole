@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import com.zanderwohl.util.Properties;
 
+import java.time.Instant;
 import java.util.HashMap;
 
 public class Message {
@@ -59,7 +60,7 @@ public class Message {
             int timestamp_int = Integer.parseInt(timestamp_);
             timestamp = timestamp_int;
         } else {
-            timestamp = (int)System.currentTimeMillis() / 1000;
+            timestamp = Integer.parseInt("" + Instant.now().getEpochSecond());
         }
         String from_ = Properties.get(msgMap, "source");
         if(from_ != null){
