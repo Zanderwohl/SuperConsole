@@ -8,6 +8,8 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 public class ConsoleTab extends Tab {
 
@@ -54,7 +56,12 @@ public class ConsoleTab extends Tab {
                 ((ValueLabel) messageDetailNumber).setValue(currentlySelectedMessage.indexInt + "");
                 ((ValueLabel) messageDetailCategory).setValue(currentlySelectedMessage.m.getAttribute("category"));
                 ((ValueLabel) messageDetailSource).setValue(currentlySelectedMessage.m.getAttribute("source"));
-                ((ValueLabel) messageDetailTime).setValue(currentlySelectedMessage.m.getAttribute("time"));
+
+                DateFormat f = new SimpleDateFormat("HH:mm:ss");
+                long time_long = Long.parseLong(currentlySelectedMessage.m.getAttribute("time")) * 1000;
+                String time_string = f.format(time_long);
+                ((ValueLabel) messageDetailTime).setValue(time_string);
+
                 ((ValueLabel) messageDetailSeverity).setValue(currentlySelectedMessage.m.getAttribute("severity"));
                 ((JTextArea) messageDetailMessage).setText(currentlySelectedMessage.m.getAttribute("message"));
             }
